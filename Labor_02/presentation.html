@@ -1,0 +1,311 @@
+<!doctype html>
+<html>
+  <head>
+      <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+      <title>p_slides</title>
+      <link rel="stylesheet" type="text/css" media="screen, projection, print" href="../p_slides/slidy.css" />
+      <link rel="stylesheet" type="text/css" media="screen" href="../p_slides/style.css" />
+      <link rel="stylesheet" type="text/css" media="screen, print" href="../p_slides/twitter_bootstrap.css" />
+      <link rel="stylesheet" type="text/css" media="screen, print" href="../p_slides/zhaw.css" />
+      <script src="../p_slides/showdown/showdown.js"></script>
+      <script src="../p_slides/showdown/extensions/table.js"></script>
+      <script src="../p_slides/slidy.js"></script>
+      <script src="../p_slides/jquery-syntax/jquery-1.4.4.min.js"></script>
+      <script src="../p_slides/jquery-syntax/jquery.syntax.min.js"></script>
+
+      <script>
+        // configure theme variables here
+        var default_footer = "abr • long_title • lecturer • MM/YYYY •"
+      </script>
+
+      <script src="http://localhost:35729/livereload.js?snipver=1"></script>
+      <meta name="duration" content="45" />
+  </head>
+  <body>
+
+
+  <script type="p_slides" class="presentation">
+
+# Node.js - Inheritance
+
+* We have already seen prototypal inheritance
+* However, Node includes its own convenience mechanism for inheritance
+* For future reference: It is similar to `_.extend`, but Node does not depend on `_` (Underscore)
+
+<pre class='syntax javascript'>
+'use strict';
+const
+  events = require('events'),
+  util = require('util'),
+  // event client constructor
+  EventsClient = function() {
+    events.EventEmitter.call(this);
+  };
+util.inherits(EventsClient, events.EventEmitter);
+
+const client = new EventsClient();
+client.on("myEvent", function() {
+  console.log("myEvent triggered");
+})
+client.emit("myEvent");
+</pre>
+### example_code/inheritance/inheritance_with_node.js
+
+* Calling the `EventEmitter` constructor in the EventsClient constructor is roughly equivalent to calling `super()` in classical OOP
+* Calling `util.inherits()` makes EventsClients' prototypal parent object the EventEmitter prototype
+
+
+---
+
+# Node.js - Modules
+
+* One of the biggest problems in JS are naming collisions
+* Say you have included a datepicker and a day-by-day schedule
+ * Both could define a `drawCalendar()` function
+ * If the names are declared in the global namespace at least one program breaks
+* Remember: This is why jQuery has its `$` namespace
+* Node has a generic solution to this problem called *Modules*
+
+---
+
+# Node.js - Modules
+
+* Node modules follow the *Module Design Pattern*
+* The pattern was originally defined as a way to provide both private and
+public encapsulation for classes
+* In JS, it is used to emulate the concept of classes - providing
+public/private methods and variables inside a single object
+* Read more about the Module Design Pattern in [Essential JS Design Patterns by Addy Osmani](http://addyosmani.com/resources/essentialjsdesignpatterns/book/#modulepatternjavascript)
+
+---
+
+# Node.js - Modules
+
+* A module is just a JS file
+* However, this file is evaluated in a special way
+* When Node loads the file, it creates a new scope, so the previous datepicker
+could not mess with the scheduler plugin
+* From inside the plugin, the outside world is invisible
+ * Except for requiring other modules
+* As a result, your code is properly scoped - no collisions possible
+
+---
+
+# Node.js - Modules
+
+* Exposing _public_ methods or variables is done by scoping them under
+`exports`
+
+### Example module
+<pre class='syntax javascript'>
+f1 = function() {
+  console.log("this is a private function and cannot be called outside this module");
+}
+
+// public_f1 exposes the otherwise private function f1
+exports.public_f1 = f1;
+
+</pre>
+
+### Example application
+<pre class='syntax javascript'>
+var sample = require('./sample_module');
+
+// this call would fail with: TypeError: Object #&lt;Object&gt; has no method 'f1'
+// sample.f1();
+
+// this call will work
+sample.public_f1();
+</pre>
+
+---
+
+# Node.js - Modules
+
+* Using parts of modules is done similarly
+* But saving only a reference to a member of the returned exports object
+
+<pre class='syntax javascript'>
+var public_f1 = require("./sample_module").public_f1;
+
+public_f1();
+</pre>
+
+* This might save you some typing
+
+---
+
+# Faye - Robust Messaging Services
+
+* We're going to explore how to write robust messaging services in Node
+* We are saving you the low-level capabilities of Node
+  * If interested, read up on Node and sockets in Chapter 3 of NTRW (see resources)
+* As messaging service, the cross-platform library [Faye](http://faye.jcoglan.com/) will be used
+* We have heard about Faye in Web2 when discussing Websockets
+* Faye is a publish-subscribe messaging system based on the Bayeux protocol
+ * It provides
+     * Message servers for Node.js and Ruby
+     * And clients for use on the server and in all major web browsers
+
+---
+
+# Faye - PubSub Pattern
+
+* PubSub is a messaging pattern where senders of messages are called *publishers*
+* These messages are not programmed to be sent directly to receivers, called
+  *subscribers*
+* Instead, published messages are characterized into classes, without knowledge
+  of what, if any, subscribers there may be
+* Similarly, subscribers express interest in one or more classes
+* They only receive messages that are of interest, without knowledge of what,
+  if any, publishers are there
+
+---
+
+# Faye - PubSub Pattern
+
+* The largest benefit of using pub/sub is the ability to break down the app
+  into smaller, more loosely coupled modules
+* It encourages to think about relationships between parts of the app
+  * Identifying what layers need to observe or listen for behaviour
+  * And which need to push notifications regarding behaviour occurring in other
+    parts of our apps
+* It is good for designing decoupled systems and are an important tool in the
+  JS toolbelt
+
+---
+
+# Faye - PubSub Pattern
+
+* PubSub is structured as an Event Bus as follows
+
+![](images/pubsub_pattern.jpg)
+
+---
+
+# Faye - First example
+
+* Faye is not your usual messaging system in that it provides backend *and*
+  frontend clients
+* Making it very easy to use PubSub
+* Also it takes good care of as a transport layer
+* It uses the best mechanism available to your browser, in the order of
+
+  1. Websockets
+  1. Long-Polling via HTTP Post (XHR)
+  1. Cross Origin Resource Sharing ([CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS))
+  1. Callback-polling ([JSONP](http://www.sitepoint.com/jsonp-examples/))
+
+---
+
+# Faye - First example
+
+## Server Side
+
+1. Install Faye: `npm install faye`
+1. Start a server
+
+<pre class='syntax javascript'>
+var http = require('http'),
+    faye = require('faye');
+
+var server = http.createServer(),
+    bayeux = new faye.NodeAdapter({mount: '/'});
+
+bayeux.attach(server);
+server.listen(8000);
+</pre>
+`example_code/faye/first_example/backend/server.js`
+
+---
+
+# Faye - First example
+## Client Side
+
+* Subscribing to a channel is easy
+<pre class='syntax javascript'>
+var client = new Faye.Client('http://localhost:8000/');
+
+client.subscribe('/messages', function(message) {
+  alert('Got a message: ' + message.text);
+});
+</pre>
+* Notice how nobody is sending to "/messages" as of now
+* Whence somebody is sending, however, all is in place already
+
+<pre class='syntax javascript'>
+client.publish('/messages', {
+  text: 'Hello world'
+});
+</pre>
+
+
+### Try the example code in: `example_code/faye/first_example/frontend`
+
+
+---
+
+# Faye - Chat Application
+
+* This is an example running the very same server as above
+* There's just a tiny bit of CSS and jQuery going on to be able to send different messages
+
+![](images/faye_chat.jpg)
+
+---
+
+# Faye - Chat Application
+
+* Notice that there are three browsers open
+* Each has registered a different username
+* The two upper browser windows seem to have been open first (see chat text)
+ * So they were able to send and retrieve messages
+* The browser on the bottom opened the app later
+ * However, when the third user writes, all existing users can read the message
+* Hence, in very little code, we have a 'complete' asynchronous chat client and server
+
+### Try the example code in: *example_code/faye/chat*
+
+---
+
+# Resources
+
+* [Node.js the Right Way: Practical, Server-Side JavaScript That Scales](https://pragprog.com/book/jwnode/node-js-the-right-way)
+* [Creating Custom Modules](http://howtonode.org/creating-custom-modules)
+* [Module Pattern in Javascript](http://addyosmani.com/resources/essentialjsdesignpatterns/book/#modulepatternjavascript)
+* [Understanding the Publish/Subscribe Pattern for Greater Javascript Scalability](http://msdn.microsoft.com/en-us/magazine/hh201955.aspx)
+* [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS)
+* [JSONP](http://www.sitepoint.com/jsonp-examples/)
+
+    </script>
+
+    <script>
+      $(".presentation").each(function() {
+        var markup = new Showdown.converter({ extensions: ['table'] }).
+        makeHtml($(this).html());
+      var slides = markup.split('<hr />');
+      for (var j = 0; j < slides.length; j++)
+        document.write('<div class=slide>' + slides[j] + '</div>');
+      });
+      $(".presentation").remove();
+      // if you want to syntax highlight *all* your code in the same way
+      // then you can uncomment and customize the next line
+      //
+      //$("pre>code").parent().addClass("syntax cpp");
+      w3c_slidy.add_listener(document.body, "touchend", w3c_slidy.mouse_button_click);
+      $.syntax();
+
+      // automatic detection for theme javascript so that it can run after
+      // slides have been generated
+      for(i in document.styleSheets) {
+        stylesheet = document.styleSheets[i].href
+          if (stylesheet && stylesheet.indexOf("theme") != -1) {
+            theme = stylesheet.slice(stylesheet.lastIndexOf("/")+1, stylesheet.length);
+          }
+      }
+    </script>
+
+  </body>
+</html>
+
+
