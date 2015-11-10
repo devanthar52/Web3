@@ -8,18 +8,23 @@ var server = http.createServer(),
 
 bayeux.attach(server);
 server.listen(8000);
+
+
 server.on('connection', function (stream) {
   console.log('someone connected!');
 });
 
 var client = bayeux.getClient(); //bayeux.getClient();
 
-client.subscribe('/messages', function(msg) {
+/*client.subscribe('/messages', function(msg) {
   console.log(msg);
+  console.log(msg.text)
+  bot.checkText();
   
-});
+});*/
+bayeux.on('publish', function(clientId, channel, data){
+	
+	
+bot.checkText(data);
 
-bayeux.getClient().publish('/messages', {
-  text:       'New Message!',
-  inboxSize:  34
-});
+})
