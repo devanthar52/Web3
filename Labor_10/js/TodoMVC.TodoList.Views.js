@@ -7,9 +7,16 @@ TodoMVC.module('TodoList.Views', function (Views, App, Backbone, Marionette, $) 
 	//
 	// Display an individual todo item, and respond to changes
 	// that are made to the item, including marking completed.
-	Views.ItemViewxx = Marionette.ItemView.extend({
+	TodoMVC.TodoView = Backbone.Marionette.ItemView.extend({
+		
+		tagName: 'li',
+		
 		template: '#template-todoItemView',
-
+		
+		
+		className: function () {
+			return this.model.get('completed') ? 'completed' : 'active';
+		},
 		ui: {
 			edit: '.edit'
 		},
@@ -80,10 +87,10 @@ TodoMVC.module('TodoList.Views', function (Views, App, Backbone, Marionette, $) 
 	//
 	// Controls the rendering of the list of items, including the
 	// filtering of activs vs completed items for display.
-	Views.ListViewxx = Backbone.View.extend({
+	TodoMVC.ListView = Backbone.Marionette.View.extend({
 		tagName: 'ul',
 		template: '#template-todoListCompositeView',
-		childView: Views.ItemView,
+		childView: TodoMVC.TodoView,
 		childViewContainer: '#todo-list',
 
 		ui: {

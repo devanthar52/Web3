@@ -4,10 +4,10 @@
 TodoMVC.module('Todos', function (Todos, App, Backbone) {
 	// Todo Model
 	// ----------
-	Todos.Todos = Backbone.Model.extend({
+	Todos.Todo = Backbone.Model.extend({
 		defaults: {
-			title: 'should this be here?',
-			completed: true,
+			title: '',
+			completed: false,
 			created: 0
 		},
 
@@ -42,6 +42,11 @@ TodoMVC.module('Todos', function (Todos, App, Backbone) {
 	// ---------------
 	Todos.TodoList = Backbone.Collection.extend({
 
+		
+		localStorage: new Backbone.LocalStorage('local'),
+		
+		comparator: 'created',
+		
 		getCompleted: function () {
 			return this.filter(this._isCompleted);
 		},
@@ -50,8 +55,7 @@ TodoMVC.module('Todos', function (Todos, App, Backbone) {
 			return this.reject(this._isCompleted);
 		},
 
-		comparator: 'created',
-
+		
 		_isCompleted: function (todo) {
 			return todo.isCompleted();
 		}
