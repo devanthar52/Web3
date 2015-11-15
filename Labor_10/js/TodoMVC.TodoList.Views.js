@@ -18,7 +18,7 @@ TodoMVC.module('TodoList.Views', function (Views, App, Backbone, Marionette, $) 
 
 
 		className: function () {
-			return this.model.get('completed') ? 'completed' : 'active';
+		//	return this.model.get('completed') ? 'completed' : 'active';
 		//	return this.model.get
 		},
 		ui: {
@@ -110,7 +110,7 @@ TodoMVC.module('TodoList.Views', function (Views, App, Backbone, Marionette, $) 
 
 		collectionEvents: {
 			'change:completed': 'render',
-			all: 'update'
+			'all': 'update'
 		},
 
 		initialize: function () {
