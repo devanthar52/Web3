@@ -4,6 +4,7 @@ describe('Tests for TodoView', function() {
 
   var collection = new TodoMVC.Todos.TodoList();
 
+
   beforeEach(function() {
     collection.localStorage._clear();
     collection.fetch();
@@ -17,6 +18,7 @@ describe('Tests for TodoView', function() {
   describe("single todo", function() {
     it("should have an ItemView", function() {
       expect(TodoMVC.TodoList.Views.ItemView).toBeDefined();
+
     });
 
     it('should be tied to a DOM element when created, based off the property provided.', function() {

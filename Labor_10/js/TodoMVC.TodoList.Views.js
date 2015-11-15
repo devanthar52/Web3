@@ -5,20 +5,26 @@ TodoMVC.module('TodoList.Views', function (Views, App, Backbone, Marionette, $) 
 	// Todo List Item View
 	// -------------------
 	//
+
 	// Display an individual todo item, and respond to changes
 	// that are made to the item, including marking completed.
-	TodoMVC.TodoView = Backbone.Marionette.ItemView.extend({
-		
+
+
+	Views.TodoView = Marionette.ItemView.extend({
+
 		tagName: 'li',
-		
+
 		template: '#template-todoItemView',
-		
-		
+
+
 		className: function () {
 			return this.model.get('completed') ? 'completed' : 'active';
 		},
 		ui: {
-			edit: '.edit'
+			edit: '.edit',
+			destroy: '.destroy',
+			label: 'label',
+			toggle: '.toggle'
 		},
 
 		events: {
@@ -102,6 +108,7 @@ TodoMVC.module('TodoList.Views', function (Views, App, Backbone, Marionette, $) 
 		},
 
 		collectionEvents: {
+			'change:completed': 'render',
 			'all': 'update'
 		},
 

@@ -4,7 +4,7 @@
 TodoMVC.module('Todos', function (Todos, App, Backbone) {
 	// Todo Model
 	// ----------
-	Todos.Todo = Backbone.Model.extend({
+	App.Todos.Todo = Backbone.Model.extend({
 		defaults: {
 			title: '',
 			completed: false,
@@ -40,11 +40,12 @@ TodoMVC.module('Todos', function (Todos, App, Backbone) {
 
 	// Todo Collection
 	// ---------------
-	Todos.TodoList = Backbone.Collection.extend({
+	App.Todos.TodoList = Backbone.Collection.extend({
 
+		model: Todos.Todo,
 		
 		localStorage: new Backbone.LocalStorage('local'),
-		
+
 		comparator: 'created',
 		
 		getCompleted: function () {

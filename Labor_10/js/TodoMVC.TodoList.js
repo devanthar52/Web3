@@ -6,7 +6,7 @@ TodoMVC.module('TodoList', function (TodoList, App, Backbone, Marionette, $, _) 
 	// ---------------
 	//
 	// Handle routes to show the active vs complete todo items
-	TodoList.Router = Marionette.AppRouter.extend({
+	TodoMVC.Router = Backbone.Marionette.AppRouter.extend({
 		appRoutes: {
 			'*filter': 'filterItems'
 		}
