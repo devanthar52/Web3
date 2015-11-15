@@ -10,7 +10,7 @@ TodoMVC.module('TodoList.Views', function (Views, App, Backbone, Marionette, $) 
 	// that are made to the item, including marking completed.
 
 
-	Views.TodoView = Marionette.ItemView.extend({
+	Views.ItemView = Backbone.Marionette.ItemView.extend({
 
 		tagName: 'li',
 
@@ -19,6 +19,7 @@ TodoMVC.module('TodoList.Views', function (Views, App, Backbone, Marionette, $) 
 
 		className: function () {
 			return this.model.get('completed') ? 'completed' : 'active';
+		//	return this.model.get
 		},
 		ui: {
 			edit: '.edit',
@@ -93,10 +94,10 @@ TodoMVC.module('TodoList.Views', function (Views, App, Backbone, Marionette, $) 
 	//
 	// Controls the rendering of the list of items, including the
 	// filtering of activs vs completed items for display.
-	TodoMVC.ListView = Backbone.Marionette.View.extend({
-		tagName: 'ul',
+	Views.ListView = Backbone.Marionette.CompositeView.extend({
+		tagName: 'div',
 		template: '#template-todoListCompositeView',
-		childView: TodoMVC.TodoView,
+		childView: Views.ItemView,
 		childViewContainer: '#todo-list',
 
 		ui: {
@@ -109,7 +110,7 @@ TodoMVC.module('TodoList.Views', function (Views, App, Backbone, Marionette, $) 
 
 		collectionEvents: {
 			'change:completed': 'render',
-			'all': 'update'
+			all: 'update'
 		},
 
 		initialize: function () {
@@ -134,7 +135,7 @@ TodoMVC.module('TodoList.Views', function (Views, App, Backbone, Marionette, $) 
 			}
 
 			var allCompleted = this.collection.reduce(reduceCompleted, true);
-
+		//	window.alert(allCompleted);
 			this.ui.toggle.prop('checked', allCompleted);
 			this.$el.parent().toggle(!!this.collection.length);
 		},
@@ -143,7 +144,7 @@ TodoMVC.module('TodoList.Views', function (Views, App, Backbone, Marionette, $) 
 			var isChecked = e.currentTarget.checked;
 
 			this.collection.each(function (todo) {
-				todo.save({ 'completed': isChecked });
+				todo.save({ completed: isChecked });
 			});
 		}
 	});

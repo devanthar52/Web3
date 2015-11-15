@@ -14,7 +14,8 @@ TodoMVC.module('Layout', function (Layout, App, Backbone) {
 		},
 
 		events: {
-			'keypress #new-todo': 'onInputKeypress'
+			'keypress #new-todo': 'onInputKeypress',
+			'keyup @ui.input': 'onInputKeyup'
 		},
 
 		onInputKeypress: function (e) {
@@ -42,7 +43,8 @@ TodoMVC.module('Layout', function (Layout, App, Backbone) {
 			completed: '.completed a',
 			active: '.active a',
 			all: '.all a',
-			summary: '#todo-count'
+			summary: '#todo-count',
+			clear: '#clear-completed'
 		},
 
 		events: {
