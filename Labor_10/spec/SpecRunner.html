@@ -58,7 +58,7 @@
 		</footer>
 		<script type="text/html" id="template-footer">
 			<span id="todo-count">
-                                <strong><!-- count goes here --></strong> <%= activeCountLabel() %>
+                                <strong><%= activeCount %></strong> <%= activeCountLabel() %>
 			</span>
 			<ul id="filters">
 				<li class="all">
@@ -77,7 +77,7 @@
 		</script>
 		<script type="text/html" id="template-header">
 			<h1>todos</h1>
-                        <!-- new todo input field goes here -->
+			<input id="new-todo" placeholder="What needs to be done?" autofocus>
 		</script>
 		<script type="text/html" id="template-todoItemView">
 			<div class="view">

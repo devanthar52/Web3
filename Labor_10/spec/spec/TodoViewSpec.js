@@ -17,12 +17,12 @@ describe('Tests for TodoView', function() {
 
   describe("single todo", function() {
     it("should have an ItemView", function() {
-      expect(TodoMVC.TodoList.Views.ItemView).toBeDefined();
+      expect(TodoMVC.TodoList.Views.TodoView).toBeDefined();
 
     });
 
     it('should be tied to a DOM element when created, based off the property provided.', function() {
-      expect(new TodoMVC.TodoList.Views.ItemView().el.tagName.toLowerCase()).toBe('li');
+      expect(new TodoMVC.TodoList.Views.TodoView().el.tagName.toLowerCase()).toBe('li');
     });
 
   });
