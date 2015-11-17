@@ -17,10 +17,6 @@ TodoMVC.module('TodoList.Views', function (Views, App, Backbone, Marionette, $) 
 		template: '#template-todoItemView',
 
 
-		className: function () {
-		//	return this.model.get('completed') ? 'completed' : 'active';
-		//	return this.model.get
-		},
 		ui: {
 			edit: '.edit',
 			destroy: '.destroy',
@@ -126,7 +122,7 @@ TodoMVC.module('TodoList.Views', function (Views, App, Backbone, Marionette, $) 
 		},
 
 		onRender: function () {
-                  // nothing to do here
+            //      this.update();
 		},
 
 		update: function () {
@@ -135,7 +131,6 @@ TodoMVC.module('TodoList.Views', function (Views, App, Backbone, Marionette, $) 
 			}
 
 			var allCompleted = this.collection.reduce(reduceCompleted, true);
-		//	window.alert(allCompleted);
 			this.ui.toggle.prop('checked', allCompleted);
 			this.$el.parent().toggle(!!this.collection.length);
 		},
